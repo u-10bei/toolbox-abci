@@ -1,0 +1,123 @@
+# vLLM環境構築設定ファイル（マルチモデル対応版）
+#
+# 対応モデル:
+#   - MiniMaxAI/MiniMax-M2
+#   - zai-org/GLM-4.6
+#   - deepseek-ai/DeepSeek-V3.2-Exp
+#   - moonshotai/Kimi-K2-Instruct-0905
+#   - Qwen/Qwen3-235B-A22B-Instruct-2507
+#   - その他既存モデル
+#
+# 注意: MiniMax-M2のreasoning parser (minimax_m2_append_think) は
+#       vLLM nightlyでのみ利用可能です。0.11.2では基本推論のみ対応。
+
+# ====================
+# 基本設定
+# ====================
+environment:
+  # 環境名（$HOME/envs/<name>に作成されます）
+  name: vllm_serve_2512
+
+  # Pythonバージョン
+  python_version: "3.12"
+
+# ====================
+# CUDA設定
+# ====================
+cuda:
+  # CUDAバージョン
+  version: "12.8"
+
+  # CUDAモジュール名
+  module_name: "cuda/12.8"
+
+# ====================
+# パッケージバージョン
+# ====================
+packages:
+  # PyTorchバージョン
+  pytorch:
+    version: "2.8.0"
+
+  # vLLMバージョン
+  vllm:
+    version: "0.12.0"
+
+  # flashinferバージョン
+  flashinfer:
+    version: "0.5.2"
+
+  # DeepGEMM（DeepSeekモデル用、オプション）
+  deepgemm:
+    enabled: true
+    git_url: "https://github.com/deepseek-ai/DeepGEMM.git"
+    version: "v2.1.0"
+
+# ====================
+# 追加パッケージ
+# ====================
+additional_packages:
+  - "ray[default]"
+  - "transformers>=4.48.0"
+  - "accelerate>=0.27.0"
+  - "hf-transfer"
+  - "blobfile"
+
+# ====================
+# モジュール設定
+# ====================
+modules:
+  # Minicondaモジュール名（module loadで使用）
+  miniconda: "miniconda/24.11.1"
+
+# ====================
+# モデル固有設定（参考情報）
+# ====================
+models:
+  minimax_m2:
+    name: "MiniMaxAI/MiniMax-M2"
+    # TP8非対応、DP+EPまたはTP4を使用
+    vllm_args:
+      - "--trust-remote-code"
+      - "--enable-expert-parallel"
+      - "--gpu-memory-utilization 0.85"
+    env_vars:
+      SAFETENSORS_FAST_GPU: "1"
+    notes: "reasoning parser (minimax_m2_append_think) requires nightly build"
+
+  glm_4_6:
+    name: "zai-org/GLM-4.6"
+    vllm_args:
+      - "--trust-remote-code"
+      - "--enable-expert-parallel"
+      - "--tool-call-parser glm45"
+      - "--reasoning-parser glm45"
+      - "--cpu-offload-gb 16"
+    env_vars:
+      VLLM_ATTENTION_BACKEND: "XFORMERS"
+
+  deepseek_v3_2_exp:
+    name: "deepseek-ai/DeepSeek-V3.2-Exp"
+    # DP+EPモード推奨
+    vllm_args:
+      - "--trust-remote-code"
+      - "--enable-expert-parallel"
+    env_vars:
+      VLLM_USE_DEEP_GEMM: "1"
+    notes: "Hopper/Blackwell GPUs only (H100/H200/B200)"
+
+  kimi_k2_instruct:
+    name: "moonshotai/Kimi-K2-Instruct-0905"
+    vllm_args:
+      - "--trust-remote-code"
+      - "--enable-auto-tool-choice"
+      - "--tool-call-parser kimi_k2"
+      - "--gpu-memory-utilization 0.95"
+    notes: "FP8 quantization recommended for memory efficiency"
+
+  qwen3_235b:
+    name: "Qwen/Qwen3-235B-A22B-Instruct-2507"
+    vllm_args:
+      - "--trust-remote-code"
+      - "--enable-expert-parallel"
+      - "--enable-chunked-prefill"

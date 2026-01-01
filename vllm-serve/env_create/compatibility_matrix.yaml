@@ -1,0 +1,308 @@
+# vLLM環境の互換性マトリックス（HPC環境用）
+#
+# このファイルは、現在のHPC環境で利用可能なCUDA、PyTorch、vLLMの互換性情報を定義します。
+# 環境: NVIDIA H100 80GB HBM3, CUDA 12.1-12.8 (Driver 570.133.20)
+
+# ====================
+# CUDA と PyTorch の互換性
+# ====================
+cuda_pytorch_compatibility:
+  "12.8":
+    pytorch_versions:
+      - "2.9.0"
+      - "2.8.0"
+      - "2.7.1"
+    pytorch_cuda_tag: "cu128"
+    recommended: "2.9.0"
+    note: "最新バージョン（ドライバー最大サポート）"
+
+  "12.6":
+    pytorch_versions:
+      - "2.9.0"
+      - "2.7.1"
+      - "2.7.0"
+    pytorch_cuda_tag: "cu126"
+    recommended: "2.9.0"
+    note: "安定版"
+
+  "12.5":
+    pytorch_versions:
+      - "2.7.0"
+      - "2.6.0"
+    pytorch_cuda_tag: "cu125"
+    recommended: "2.7.0"
+    note: "レガシーサポート"
+
+  "12.4":
+    pytorch_versions:
+      - "2.6.0"
+    pytorch_cuda_tag: "cu124"
+    recommended: "2.6.0"
+    note: "レガシーサポート"
+
+  "12.2":
+    pytorch_versions:
+      - "2.5.0"
+    pytorch_cuda_tag: "cu122"
+    recommended: "2.5.0"
+    note: "レガシーサポート"
+
+  "12.1":
+    pytorch_versions:
+      - "2.5.0"
+      - "2.4.0"
+    pytorch_cuda_tag: "cu121"
+    recommended: "2.5.0"
+    note: "レガシーサポート"
+
+# ====================
+# PyTorch と vLLM の互換性
+# ====================
+pytorch_vllm_compatibility:
+  "2.8.0":
+    vllm_versions:
+      - "0.11.0"
+      - "0.10.2"
+      - "0.10.1"
+    recommended: "0.11.0"
+    note: "最新版（vLLM 0.11.0は破壊的変更でPyTorch 2.8.0が必須）"
+    flashinfer_version: "0.3.1"
+
+  "2.7.1":
+    vllm_versions:
+      - "0.10.2"
+      - "0.10.1"
+      - "0.10.0"
+    recommended: "0.10.2"
+    note: "安定版（vLLM 0.10.x系）"
+    flashinfer_version: "0.2.3"
+
+  "2.7.0":
+    vllm_versions:
+      - "0.10.0"
+      - "0.9.0"
+    recommended: "0.10.0"
+    note: "レガシーサポート"
+    flashinfer_version: "0.2.3"
+
+  "2.6.0":
+    vllm_versions:
+      - "0.9.0"
+    recommended: "0.9.0"
+    note: "レガシーサポート"
+
+# ====================
+# GPU アーキテクチャ設定（H100専用）
+# ====================
+gpu_architectures:
+  # NVIDIA H100 (このHPC環境のGPU)
+  "H100":
+    compute_capability: "9.0"
+    torch_cuda_arch_list: "9.0"
+    recommended_memory_utilization: 0.85
+    supports_flashinfer: true
+    supports_moe: true
+    max_context_length: 262144
+    tensor_cores: true
+    note: "Hopper アーキテクチャ、最高性能"
+
+# ====================
+# Python バージョンの互換性
+# ====================
+python_compatibility:
+  pytorch:
+    "2.8.0":
+      python_versions: ["3.10", "3.11", "3.12"]
+      recommended: "3.12"
+      note: "Python 3.12推奨"
+
+    "2.7.1":
+      python_versions: ["3.10", "3.11", "3.12"]
+      recommended: "3.12"
+      note: "Python 3.12推奨"
+
+    "2.7.0":
+      python_versions: ["3.9", "3.10", "3.11", "3.12"]
+      recommended: "3.11"
+      note: "Python 3.11/3.12推奨"
+
+    "2.6.0":
+      python_versions: ["3.9", "3.10", "3.11"]
+      recommended: "3.11"
+      note: "Python 3.11推奨"
+
+  vllm:
+    "0.11.0":
+      python_versions: ["3.10", "3.11", "3.12", "3.13"]
+      recommended: "3.12"
+      note: "Python 3.12推奨（3.8以上サポートだが3.10以上を強く推奨）"
+
+    "0.10.2":
+      python_versions: ["3.10", "3.11", "3.12"]
+      recommended: "3.12"
+      note: "Python 3.12推奨"
+
+    "0.10.0":
+      python_versions: ["3.9", "3.10", "3.11", "3.12"]
+      recommended: "3.11"
+      note: "Python 3.11/3.12推奨"
+
+# ====================
+# モジュール依存関係（HPC環境用）
+# ====================
+module_dependencies:
+  cuda:
+    "12.8":
+      required_modules:
+        - name: "cudnn"
+          versions: ["9.6.0"]
+          recommended: "9.6.0"
+        - name: "nccl"
+          versions: ["2.24.3"]
+          recommended: "2.24.3"
+        - name: "miniconda"
+          versions: ["24.7.1-py312"]
+          recommended: "24.7.1-py312"
+
+    "12.6":
+      required_modules:
+        - name: "cudnn"
+          versions: ["9.6.0", "9.5.0"]
+          recommended: "9.6.0"
+        - name: "nccl"
+          versions: ["2.24.3", "2.23.4"]
+          recommended: "2.24.3"
+        - name: "miniconda"
+          versions: ["24.7.1-py312"]
+          recommended: "24.7.1-py312"
+
+# ====================
+# 最小システム要件
+# ====================
+minimum_requirements:
+  vllm:
+    "0.11.0":
+      cuda_min_version: "12.6"
+      python_min_version: "3.10"
+      pytorch_required: "2.8.0"
+      flashinfer_required: "0.3.1"
+      gpu_memory_min_gb: 40  # H100は80GBあるので余裕
+      system_memory_min_gb: 200
+      compute_capability_min: "8.0"
+      build_requirements:
+        - "C++17 compiler"
+      note: "破壊的変更: PyTorch 2.8.0が必須、V0エンジン削除（V1エンジンのみ）"
+
+    "0.10.2":
+      cuda_min_version: "12.1"
+      python_min_version: "3.10"
+      gpu_memory_min_gb: 40
+      system_memory_min_gb: 200
+      compute_capability_min: "8.0"
+
+    "0.10.0":
+      cuda_min_version: "12.1"
+      python_min_version: "3.9"
+      gpu_memory_min_gb: 40
+      system_memory_min_gb: 200
+      compute_capability_min: "8.0"
+
+# ====================
+# 非推奨の組み合わせ
+# ====================
+deprecated_combinations:
+  - cuda: "12.1"
+    pytorch: "2.8.0"
+    reason: "PyTorch 2.8.0はCUDA 12.6以上を推奨"
+
+  - cuda: "12.2"
+    pytorch: "2.8.0"
+    reason: "PyTorch 2.8.0はCUDA 12.6以上を推奨"
+
+  - python: "3.9"
+    vllm: "0.10.2"
+    reason: "vLLM 0.10.2はPython 3.10以上を推奨"
+
+# ====================
+# 推奨構成プリセット（HPC環境用）
+# ====================
+recommended_presets:
+  production_latest:
+    description: "最新の本番環境設定（vLLM 0.11.0、H100用、推奨）"
+    cuda_version: "12.8"
+    python_version: "3.12"
+    pytorch_version: "2.8.0"
+    vllm_version: "0.11.0"
+    flashinfer_version: "0.3.1"
+    gpu_memory_utilization: 0.85
+    modules:
+      cudnn: "9.6.0"
+      nccl: "2.24.3"
+      miniconda: "24.7.1-py312"
+    note: "vLLM 0.11.0はV1エンジンのみ、最高性能"
+
+  production_stable:
+    description: "安定版の本番環境設定（vLLM 0.10.2、H100用）"
+    cuda_version: "12.6"
+    python_version: "3.12"
+    pytorch_version: "2.7.1"
+    vllm_version: "0.10.2"
+    flashinfer_version: "0.2.3"
+    gpu_memory_utilization: 0.85
+    modules:
+      cudnn: "9.6.0"
+      nccl: "2.24.3"
+      miniconda: "24.7.1-py312"
+    note: "実績のある安定版構成"
+
+  production_vllm_0_11:
+    description: "vLLM 0.11.0用の本番環境設定（CUDA 12.6、H100用）"
+    cuda_version: "12.6"
+    python_version: "3.12"
+    pytorch_version: "2.8.0"
+    vllm_version: "0.11.0"
+    flashinfer_version: "0.3.1"
+    gpu_memory_utilization: 0.85
+    modules:
+      cudnn: "9.6.0"
+      nccl: "2.24.3"
+      miniconda: "24.7.1-py312"
+    note: "vLLM 0.11.0 + CUDA 12.6の安定構成"
+
+  development:
+    description: "開発環境設定（vLLM 0.11.0、H100用）"
+    cuda_version: "12.8"
+    python_version: "3.12"
+    pytorch_version: "2.8.0"
+    vllm_version: "0.11.0"
+    flashinfer_version: "0.3.1"
+    gpu_memory_utilization: 0.80
+    modules:
+      cudnn: "9.6.0"
+      nccl: "2.24.3"
+      miniconda: "24.7.1-py312"
+    note: "開発・テスト用（メモリ使用率低め）"
+
+# ====================
+# 環境固有の情報
+# ====================
+hpc_environment:
+  gpu_model: "NVIDIA H100 80GB HBM3"
+  driver_version: "570.133.20"
+  available_cuda_versions:
+    - "12.8"
+    - "12.6"
+    - "12.5"
+    - "12.4"
+    - "12.2"
+    - "12.1"
+
+  default_cuda: "12.8"
+  default_python: "3.12"
+
+  notes:
+    - "H100はCompute Capability 9.0（Hopper世代）"
+    - "ドライバー 570.133.20はCUDA 12.8までをサポート"
+    - "CUDA 12.8 + PyTorch 2.8.0 + vLLM 0.11.0の組み合わせを推奨"
+    - "FlashInferとMoEを完全サポート"
+    - "最大コンテキスト長: 262144トークン"

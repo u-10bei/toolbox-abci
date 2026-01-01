@@ -1,0 +1,57 @@
+# ログファイル
+logs/
+*.log
+nohup.out
+
+# 設定ファイル（センシティブ情報を含む）
+config/info.yaml
+
+# Python関連
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# キャッシュディレクトリ
+.cache/
+*.cache
+
+# Conda環境
+envs/
+env/
+venv/
+ENV/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# OS固有
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Slurm関連
+slurm-*.out
+slurm-*.err
+
+# vLLM/HuggingFace キャッシュ
+.hf_cache/
+.vllm/
+
+# 一時ファイル
+*.tmp
+*.bak
+*.swp
+*~.nib

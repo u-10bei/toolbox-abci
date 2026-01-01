@@ -20,12 +20,6 @@ if [ -d "${INSTALL_DIR}/bin" ] && [ -x "${INSTALL_DIR}/bin/conda" ]; then
     exit 0
 fi
 
-# 念のためSSH等が故障したときなどに備えて~/.bashrcをバックアップしておく。
-if [ -f ~/.bashrc ]; then
-    cp ~/.bashrc ~/.bashrc.backup.$(date +%Y%m%d_%H%M%S)
-    echo ".bashrcをバックアップしました: ~/.bashrc.backup.*"
-fi
-
 # インストール先ディレクトリを作成。
 mkdir -p ${INSTALL_DIR}
 
